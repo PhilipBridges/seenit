@@ -1,0 +1,17 @@
+.header {
+  background: $header;
+}
+
+.header__content {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: $m-size 0;
+  height: 1.2rem;
+}
+
+.header__title {  
+  color: white;
+  text-decoration: none;
+  justify-content: left;
+}

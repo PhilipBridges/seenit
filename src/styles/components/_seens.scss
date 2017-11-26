@@ -1,10 +1,27 @@
 .seens {
+  border: 1px solid darken($off-white, 7%);
+  border-top: none;
+  color: $dark-grey;
+  display: flex;
+  flex-direction: row;
+  text-decoration: none;
   float: right;
-  padding: $m-size;
-  background: none;
-  justify-content: center;
+  transition: background .3s ease;
+  white-space: nowrap;
+  padding: $s-size;
+  text-align: center;
+  align-items: center;
+  @media (min-width: $desktop-breakpoint) {
+    flex-direction: column;
+    padding: $s-size;
+    white-space: nowrap;
+  }
+}
+
+.seens-body {
+  margin-bottom: $m-size;
+  display: flex;
   flex-direction: column;
-  border: 1px solid black;
-  border-radius: 5%;
-  margin: 0 auto;
+  float: right;
+  letter-spacing: 2px;
 }

@@ -3,39 +3,39 @@ import { connect } from 'react-redux'
 import Seens from './Seens'
 import { Link } from 'react-router-dom';
 import { getPosts } from '../actions/posts';
-import { List, ListItem } from 'material-ui/List';
 import Post from './Post'
+import PropTypes from 'prop-types';
+import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
+import RaisedButton from './RaisedButton';
 
 export class Seen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      xPosts: this.props.newPosts
+      xPosts: this.props.newPosts ? this.props.newPosts : [],
+      isLoading: true
     }
+  }
+  componentDidMount() {
+    this.setState({ xPosts: this.props.newPosts })
+    this.setState({ isLoading: false })
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.newPosts.length >= 1) {
       this.props.getPosts(nextProps.seen.posts)
-      this.setState({ xPosts: this.props.newPosts })
+      this.setState({ xPosts: nextProps.seen.posts })
+    } else {
+      this.setState({ xPosts: [] })
     }
   }
   render() {
     const { title, body, author, id } = this.props.seen
-    const posts = [] = this.props.newPosts
+    const posts = [] = this.state.xPosts
     const newPosts = Object.values(posts)
     return (
       <div>
-          <Link to={`/s/${title}/create`} id={this.props.id}>New Post</Link>
-          {newPosts.map((post) => (
-            <div key={post.title}>
-              <Link to={`/s/posts/${post.title}`} {...post}>
-                {post.title}
-              </Link>
-            </div>
-          ))}
-
         <div className="seens">
-          <div className="list-body">
+          <div className="seens-body">
             <div>
               <h3 className="list-item__title">
                 {title}
@@ -44,11 +44,33 @@ export class Seen extends Component {
                 {body}
               </p>
               <p>Created by {author}</p>
+              <Link to={`/s/${title}/create`} id={this.props.id}>
+                <RaisedButton />
+              </Link>
             </div>
-
           </div>
         </div>
-      </div>
+
+        <List className="list-body">
+          {newPosts.map((post) => (
+            <Link className="list-item" to={{
+              pathname: `/s/posts/${post.title}`,
+              post: { ...post }
+            }}
+              key={post.postid}
+              {...post}>
+              <ListItem className="mui-fix" button>
+                <p>{post.title}
+                  <br />
+                  by {post.author}
+                </p>
+              </ListItem>
+            </Link>
+          ))}
+        </List>
+
+
+      </div >
     )
   }
 }

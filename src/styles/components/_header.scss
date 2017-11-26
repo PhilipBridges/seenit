@@ -1,4 +1,4 @@
-.header {
+.real_header {
   background: $header;
 }
 
@@ -8,10 +8,22 @@
   justify-content: space-between;
   padding: $m-size 0;
   height: 1.2rem;
+  overflow: hidden;
+  vertical-align: middle;
 }
 
 .header__title {  
   color: white;
   text-decoration: none;
   justify-content: left;
+  white-space: nowrap;
+  display: inline;
+  font-size: 2rem;
+}
+
+.material-icons {
+  display: inline-flex;
+  vertical-align: middle;
+  position: relative;
+  bottom: 2px;
 }

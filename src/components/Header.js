@@ -8,12 +8,13 @@ export class Header extends Component {
   render() {
     const user = this.props.user
     return (
-      <header className="header">
+      <header className="real_header">
         <div className="content-container">
           <div className="header__content">
             <Link className="header__title" to="/">
-              <h3>Seenit</h3>
+              <i className="material-icons">tune</i> Seenit
             </Link>
+            
             <Link className="button button--link" to="/profile">
               Profile ({this.props.user.name})
             </Link>

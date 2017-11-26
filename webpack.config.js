@@ -6,7 +6,7 @@ process.env.node_ENV = process.env.NODE_ENV || 'development'
 
 if (process.env.NODE_ENV === 'test') {
   require('dotenv').config({ path: '.env.test' });
-} else if  (process.env.NODE_ENV === 'development'){
+} else if (process.env.NODE_ENV === 'development') {
   require('dotenv').config({ path: '.env.development' });
 }
 
@@ -23,16 +23,16 @@ module.exports = (env) => {
       rules: [{
         loader: 'babel-loader',
         test: /\.js$/,
-        exclude: /node_modules/
+        exclude: /node_modules/,
       }, {
         test: /\.s?css$/,
         use: CSSExtract.extract({
           use: [
             {
-             loader: 'css-loader',
-             options: {
-               sourcemap: true
-             }
+              loader: 'css-loader',
+              options: {
+                sourcemap: true
+              }
             },
             {
               loader: 'sass-loader',

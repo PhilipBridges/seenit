@@ -2,22 +2,25 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 
 export class Post extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
-      post: this.props.post
+      post: this.props.location.post
     }
   }
   render() {
+    const { author, body, date, title } = this.state.post
     return (
       <div className="content-container">
         <div className="list-header">
-      </div>
+          {title}
+          <br />
+          by {author} @ {date}
+        </div>
         <div className="list-body">
           <div>
-            <h3 className="list-item__title">
-            </h3>
             <p className="list-item__data">
+              {body}
             </p>
           </div>
         </div>

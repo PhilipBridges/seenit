@@ -2,6 +2,11 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { fireGetSubPosts, getPosts } from '../actions/posts';
+import LoadingPage from './LoadingPage';
+import ReactDOM from 'react-dom';
+import { history } from '../routers/AppRouter';
+import PropTypes from 'prop-types';
+import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 
 export class Seens extends Component {
   constructor(props) {
@@ -14,14 +19,19 @@ export class Seens extends Component {
     return true
   }
   handleClick = (e) => {
-    this.props.fireGetSubPosts(e.target.id)
+    const title = e.currentTarget.title
+    this.props.fireGetSubPosts(e.currentTarget.id).then(() => {
+      history.push(`/s/${title}`)
+    })
   }
   render() {
     return (
-      <div>
+      <div className="seens-body">
         {this.props.seens.map((seen) => (
-          <Link className="list-item" onClick={this.handleClick} key={seen.id} to={`/s/${seen.title}`} {...seen}>
-            {seen.title}
+          <Link className="seens" onClick={this.handleClick} key={seen.id} to={`/s/${seen.title}`} {...seen}>
+            <ListItem button>
+              {seen.title}
+            </ListItem>
           </Link>
         )
         )}

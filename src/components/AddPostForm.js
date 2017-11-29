@@ -12,7 +12,8 @@ export class AddPostForm extends Component {
       date: 0,
       seen: this.props.seen || '',
       seenid: this.props.seen.id || '',
-      postid: uuidv4()
+      postid: uuidv4(),
+      votes: 0
     }
   }
   onSubmit = (e) => {
@@ -24,6 +25,7 @@ export class AddPostForm extends Component {
     const seen = this.state.seen.title
     const seenid = this.state.seenid
     const postid = this.state.postid
+    const votes = this.state.votes
 
     this.props.onSubmit({
       title,
@@ -32,7 +34,8 @@ export class AddPostForm extends Component {
       date,
       seen,
       seenid,
-      postid
+      postid,
+      votes
     })
   }
   onTitleChange = (e) => {

@@ -20,9 +20,7 @@ export class Seens extends Component {
   }
   handleClick = (e) => {
     const title = e.currentTarget.title
-    this.props.fireGetSubPosts(e.currentTarget.id).then(() => {
-      history.push(`/s/${title}`)
-    })
+    this.props.fireGetSubPosts(e.currentTarget.id)
   }
   render() {
     return (

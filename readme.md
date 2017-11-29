@@ -1,3 +1,3 @@
-react-redux private blog
+react-redux board thing
 
 wow

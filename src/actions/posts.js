@@ -5,28 +5,27 @@ import database from '../firebase/firebase';
 export const getPosts = (posts = []) => ({
   type: 'SET_POSTS',
   posts
-})
+});
 
 export const fireGetPosts = () => {
   return (dispatch, getState) => {
     const uid = getState().auth.uid;
     return database.ref(`/posts`)
+      .orderByChild(`votes`)
+      .limitToFirst(15)
       .once('value')
       .then((snapshot) => {
         const posts = []
-
         snapshot.forEach((childSnapshot) => {
           posts.push({
             id: childSnapshot.key,
             ...childSnapshot.val()
-          })
+          });
           dispatch(getPosts(posts))
-        })
-      })
+        });
+      });
   }
 }
-
-
 
 export const addPost = (post) => ({
   type: 'ADD_POST',
@@ -43,10 +42,11 @@ export const fireAddPost = (postData = {}) => {
       date = 0,
       seen = '',
       seenid = '',
-      postid = ''
+      postid = '',
+      votes = 0
     } = postData;
-    const post = { title, body, author, date, seen, seenid, postid }
-    database.ref(`/seens/${seenid}/posts`).push(post).then((ref) => {
+    const post = { title, body, author, date, seen, seenid, postid, votes }
+    database.ref(`/posts`).push(post).then((ref) => {
       dispatch(addPost({
         id: ref.key,
         ...post
@@ -63,7 +63,9 @@ export const getSubSeens = (posts = []) => ({
 
 export const fireGetSubPosts = (id) => {
   return (dispatch, getState) => {
-    return database.ref(`/seens/${id}/posts`)
+    return database.ref(`/posts`)
+      .orderByChild("seenid")
+      .equalTo(id)
       .once('value')
       .then((snapshot) => {
         const posts = []
@@ -71,9 +73,31 @@ export const fireGetSubPosts = (id) => {
           posts.push({
             id: childSnapshot.key,
             ...childSnapshot.val()
-          })
+          });
           dispatch(getSubSeens(posts))
-        })
+        });
+      });
+  }
+}
+
+// Votes
+export const fireUpVote = (id) => {
+  return (dispatch, getState) => {
+    return database.ref(`/posts/${id}`)
+      .child('votes')
+      .transaction((votes) => {
+        return (votes || 0) + 1
+      })
+  }
+}
+
+
+export const fireDownVote = (id) => {
+  return (dispatch, getState) => {
+    return database.ref(`/posts/${id}`)
+      .child('votes')
+      .transaction((votes) => {
+        return (votes || 0) - 1
       })
   }
 }

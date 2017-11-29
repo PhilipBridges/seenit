@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import { fireUpVote, fireDownVote } from '../actions/posts';
 
 export class Post extends Component {
   constructor(props) {
@@ -8,10 +9,18 @@ export class Post extends Component {
       post: this.props.location.post
     }
   }
+  upVote = () => {
+    this.props.fireUpVote(this.state.post.id)
+  }
+  downVote = () => {
+    this.props.fireDownVote(this.state.post.id)
+  }
   render() {
-    const { author, body, date, title } = this.state.post
+    const { author, body, date, title, id } = this.state.post
     return (
       <div className="content-container">
+      <button onClick={this.upVote}>Upvote</button>
+      <button onClick={this.downVote}>Downvote</button>
         <div className="list-header">
           {title}
           <br />
@@ -30,6 +39,11 @@ export class Post extends Component {
 }
 
 const mapStateToProps = (state, props) => ({
+
+})
+const mapDispatchToProps = (dispatch) => ({
+  fireUpVote: (id) => dispatch(fireUpVote(id)),
+  fireDownVote: (id) => dispatch(fireDownVote(id))
 })
 
-export default connect(mapStateToProps)(Post);
+export default connect(undefined, mapDispatchToProps)(Post);

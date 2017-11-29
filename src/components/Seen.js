@@ -4,7 +4,6 @@ import Seens from './Seens'
 import { Link } from 'react-router-dom';
 import { getPosts } from '../actions/posts';
 import Post from './Post'
-import PropTypes from 'prop-types';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import RaisedButton from './RaisedButton';
 
@@ -12,7 +11,9 @@ export class Seen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      xPosts: this.props.newPosts ? this.props.newPosts : [],
+      xPosts: this.props.newPosts ? this.props.newPosts.sort((a, b) => {
+        return a.votes < b.votes
+      }) : [],
       isLoading: true
     }
   }
@@ -20,14 +21,7 @@ export class Seen extends Component {
     this.setState({ xPosts: this.props.newPosts })
     this.setState({ isLoading: false })
   }
-  componentWillReceiveProps(nextProps) {
-    if (this.props.newPosts.length >= 1) {
-      this.props.getPosts(nextProps.seen.posts)
-      this.setState({ xPosts: nextProps.seen.posts })
-    } else {
-      this.setState({ xPosts: [] })
-    }
-  }
+  
   render() {
     const { title, body, author, id } = this.props.seen
     const posts = [] = this.state.xPosts
@@ -50,9 +44,8 @@ export class Seen extends Component {
             </div>
           </div>
         </div>
-
         <List className="list-body">
-          {newPosts.map((post) => (
+          {this.props.newPosts.map((post) => (
             <Link className="list-item" to={{
               pathname: `/s/posts/${post.title}`,
               post: { ...post }
@@ -60,7 +53,7 @@ export class Seen extends Component {
               key={post.postid}
               {...post}>
               <ListItem className="mui-fix" button>
-                <p>{post.title}
+                <p>{post.votes} - {post.title}
                   <br />
                   by {post.author}
                 </p>
@@ -68,16 +61,14 @@ export class Seen extends Component {
             </Link>
           ))}
         </List>
-
-
-      </div >
+      </div>
     )
   }
 }
 
 const mapStateToProps = (state, props) => ({
   seen: state.seens.find((seen) => seen.title === props.match.params.title),
-  newPosts: state.posts !== null ? state.posts : []
+  newPosts: state.posts !== null ? state.posts.reverse() : []
 });
 
 const mapDispatchToProps = (dispatch) => ({

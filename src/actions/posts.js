@@ -43,9 +43,10 @@ export const fireAddPost = (postData = {}) => {
       seen = '',
       seenid = '',
       postid = '',
-      votes = 0
+      votes = 0,
+      voters = ''
     } = postData;
-    const post = { title, body, author, date, seen, seenid, postid, votes }
+    const post = { title, body, author, date, seen, seenid, postid, votes, voters }
     database.ref(`/posts`).push(post).then((ref) => {
       dispatch(addPost({
         id: ref.key,
@@ -81,23 +82,41 @@ export const fireGetSubPosts = (id) => {
 }
 
 // Votes
-export const fireUpVote = (id) => {
+export const fireUpVote = (id, user) => {
   return (dispatch, getState) => {
-    return database.ref(`/posts/${id}`)
-      .child('votes')
-      .transaction((votes) => {
-        return (votes || 0) + 1
+    const uid = getState().auth.uid;
+    database.ref(`/posts/${id}/voters/${uid}`).once('value')
+      .then(function (snapshot) {
+        if (!snapshot.exists()) {
+          return database.ref(`/posts/${id}`)
+          .child('votes')
+          .transaction((votes) => {
+            return (votes || 0) + 1
+          })
+          .then((fireUpdateVote(id, uid)))
+        }
       })
   }
 }
 
 
-export const fireDownVote = (id) => {
+export const fireDownVote = (id, user) => {
   return (dispatch, getState) => {
-    return database.ref(`/posts/${id}`)
-      .child('votes')
-      .transaction((votes) => {
-        return (votes || 0) - 1
-      })
+    const uid = getState().auth.uid;
+    if (database.ref(`/posts/${id}/voters`).child(`${uid}`).key !== uid) {
+      return database.ref(`/posts/${id}`)
+        .child('votes')
+        .transaction((votes) => {
+          return (votes || 0) - 1
+        }).then((fireUpdateVote(id, uid)))
+    } else {
+      console.log('equal')
+    }
   }
+}
+
+export const fireUpdateVote = (id, user) => {
+  return database.ref(`/posts/${id}/voters`)
+    .child(`${user}`)
+    .push(user)
 }

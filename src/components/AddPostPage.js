@@ -25,6 +25,7 @@ export class AddPostPage extends React.Component {
             user={this.user}
             isAuthed={this.isAuthed}
             seen={this.seen}
+            id={this.props.id}
           />
         </div>
       </div>
@@ -34,6 +35,7 @@ export class AddPostPage extends React.Component {
 
 const mapStateToProps = (state, props) => ({
   user: state.profile,
+  id: state.auth.uid || undefined,
   isAuthed: state.auth.uid && state.auth.uid.length > 1,
   seen: state.seens.find((seen) => seen.title === props.match.params.title)
 });

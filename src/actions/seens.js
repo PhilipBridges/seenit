@@ -44,7 +44,7 @@ export const fireAddSeen = (seenData = {}) => {
     const seen = { title, body, author, date }
     database.ref(`/seens/`).push(seen).then((ref) => {
       dispatch(addSeen({
-        id: ref.key,
+        id: ref.database.ref(`/posts/${id}`),
         ...seen
       }))
     });

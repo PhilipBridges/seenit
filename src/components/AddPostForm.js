@@ -13,7 +13,8 @@ export class AddPostForm extends Component {
       seen: this.props.seen || '',
       seenid: this.props.seen.id || '',
       postid: uuidv4(),
-      votes: 0
+      votes: 1,
+      voters: [this.props.id],
     }
   }
   onSubmit = (e) => {
@@ -26,6 +27,7 @@ export class AddPostForm extends Component {
     const seenid = this.state.seenid
     const postid = this.state.postid
     const votes = this.state.votes
+    const voters = this.state.voters
 
     this.props.onSubmit({
       title,
@@ -35,7 +37,8 @@ export class AddPostForm extends Component {
       seen,
       seenid,
       postid,
-      votes
+      votes,
+      voters
     })
   }
   onTitleChange = (e) => {
@@ -49,6 +52,7 @@ export class AddPostForm extends Component {
     render(){
       return (
         <div>
+          {console.log(this.props.user)}
           <form className="form" onSubmit={this.onSubmit}>
             <input className="text-input" onChange={this.onTitleChange} value={this.state.title} placeholder="title" type="text"/>
             <textarea rows="8" className="textarea" onChange={this.onBodyChange} value={this.state.body} placeholder="body"></textarea>

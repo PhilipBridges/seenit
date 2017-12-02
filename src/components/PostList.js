@@ -10,20 +10,17 @@ export class PostList extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      posts: this.props.posts.sort((a, b) => {
-        return a.votes < b.votes
-      })
+      posts: this.props.posts || []
     }
   }
   componentWillReceiveProps() {
     if (this.props.posts.length >= 1) {
       this.setState({ posts: this.props.posts })
     } else {
-      this.setState({ xPosts: [] })
+      this.setState({ posts: [] })
     }
   }
   componentWillMount() {
-    this.setState({ posts: [] })
     this.props.getPosts()
   }
   componentWillUnmount() {
@@ -35,9 +32,11 @@ export class PostList extends Component {
     return (
       <div className="list-body">
         <List className="list-body">
-          {newPosts.map((post) => (
+          {newPosts.sort((a, b) => {
+            return a.votes < b.votes
+          }).map((post) => (
             <Link className="list-item" to={{
-              pathname: `/s/posts/${post.title}`,
+              pathname: `/s/${post.seen}/posts/${post.title}`,
               post: { ...post }
             }}
               key={post.postid}
@@ -45,7 +44,7 @@ export class PostList extends Component {
               <ListItem className="mui-fix" button>
                 <p>{post.votes} - {post.title}
                   <br />
-                  by {post.author}
+                  by {post.author} in {post.seen}
                 </p>
               </ListItem>
             </Link>

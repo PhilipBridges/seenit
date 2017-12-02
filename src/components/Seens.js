@@ -15,22 +15,25 @@ export class Seens extends Component {
       seens: this.props.seens
     }
   }
-  shouldComponentUpdate() {
-    return true
-  }
   handleClick = (e) => {
+    e.stopPropagation();
+    const id = e.currentTarget.id
     const title = e.currentTarget.title
-    this.props.fireGetSubPosts(e.currentTarget.id)
+    history.push(`/s/${title}`)
+    let getPosts = this.props.getPosts
+    this.props.fireGetSubPosts(id).then((posts, getPosts) => {
+      this.props.getPosts(posts)
+    })
   }
   render() {
     return (
       <div className="seens-body">
         {this.props.seens.map((seen) => (
-          <Link className="seens" onClick={this.handleClick} key={seen.id} to={`/s/${seen.title}`} {...seen}>
+          <button className="seens" onClick={this.handleClick} key={seen.id} {...seen}>
             <ListItem button>
               {seen.title}
             </ListItem>
-          </Link>
+          </button>
         )
         )}
       </div>

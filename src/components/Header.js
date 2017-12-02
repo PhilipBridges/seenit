@@ -2,20 +2,26 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { startLogout, startLogin } from '../actions/auth';
-import { fireGetPosts } from '../actions/posts';
+import { fireGetPosts, getPosts } from '../actions/posts';
 import { firebase } from '../firebase/firebase';
 import { history } from '../routers/AppRouter';
 
 export class Header extends Component {
+  constructor(props) {
+    super(props);
+  }
   handleClick = (e) => {
-    this.props.fireGetPosts().then(() => {
-      history.push(`/`)
-    });
+    const getPosts = this.props.getPosts
+    history.push(`/`)
+    this.props.fireGetPosts().then((posts, getPosts) => {
+      this.props.getPosts(posts)
+    })
   }
   render() {
     const user = this.props.user
     return (
       <header className="real_header">
+        {console.log(this.props)}
         <div className="content-container">
           <div className="header__content">
             <button className="button button--link" onClick={this.handleClick}>
@@ -48,6 +54,7 @@ const mapDispatchToProps = (dispatch) => ({
   fireGetPosts: () => dispatch(fireGetPosts()),
   startLogout: () => dispatch(startLogout()),
   startLogin: () => dispatch(startLogin()),
+  getPosts: () => dispatch(getPosts())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

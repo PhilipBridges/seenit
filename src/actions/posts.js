@@ -20,7 +20,7 @@ export const fireGetPosts = () => {
           posts.push({
             id: childSnapshot.key,
             ...childSnapshot.val()
-          });
+          })
           dispatch(getPosts(posts))
         });
       });

@@ -11,21 +11,19 @@ export class Seen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      xPosts: this.props.newPosts ? this.props.newPosts.sort((a, b) => {
-        return a.votes < b.votes
-      }) : [],
-      isLoading: true
+      xPosts: this.props.newPosts
     }
   }
-  componentDidMount() {
+  componentWillReceiveProps(nextProps) {
     this.setState({ xPosts: this.props.newPosts })
-    this.setState({ isLoading: false })
   }
-  
+  componentWillMount() {
+    this.setState({ xPosts: this.props.newPosts })
+  }
   render() {
     const { title, body, author, id } = this.props.seen
-    const posts = [] = this.state.xPosts
-    const newPosts = Object.values(posts)
+    const posts = this.state.xPosts
+    const zPosts = Object.values(posts)
     return (
       <div>
         <div className="seens">
@@ -45,9 +43,9 @@ export class Seen extends Component {
           </div>
         </div>
         <List className="list-body">
-          {this.props.newPosts.map((post) => (
+          {posts.map((post) => (
             <Link className="list-item" to={{
-              pathname: `/s/posts/${post.title}`,
+              pathname: `/s/${post.seen}/posts/${post.title}`,
               post: { ...post }
             }}
               key={post.postid}
@@ -68,7 +66,7 @@ export class Seen extends Component {
 
 const mapStateToProps = (state, props) => ({
   seen: state.seens.find((seen) => seen.title === props.match.params.title),
-  newPosts: state.posts !== null ? state.posts.reverse() : []
+  newPosts: state.posts !== [] ? state.posts : []
 });
 
 const mapDispatchToProps = (dispatch) => ({

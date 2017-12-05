@@ -32,6 +32,26 @@ export const addPost = (post) => ({
   post
 });
 
+// Get selected post
+export const getSinglePost = (posts = []) => ({
+  type: 'SET_POSTS',
+  posts
+});
+
+export const fireGetSinglePost = (id) => {
+  return (dispatch, getState) => {
+    return database.ref(`/posts/${id}`)
+      .orderByChild("postid")
+      .once('value')
+      .then((snapshot) => {
+        const posts = snapshot.val()
+  
+          dispatch(getSinglePost(posts))
+        });
+  }
+}
+
+
 export const fireAddPost = (postData = {}) => {
   return (dispatch, getState) => {
     const uid = getState().auth.uid;
@@ -89,11 +109,11 @@ export const fireUpVote = (id, user) => {
       .then(function (snapshot) {
         if (!snapshot.exists()) {
           return database.ref(`/posts/${id}`)
-          .child('votes')
-          .transaction((votes) => {
-            return (votes || 0) + 1
-          })
-          .then((fireUpdateVote(id, uid)))
+            .child('votes')
+            .transaction((votes) => {
+              return (votes || 0) + 1
+            })
+            .then((fireUpdateVote(id, uid)))
         }
       })
   }

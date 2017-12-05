@@ -4,6 +4,7 @@ import authReducer from '../reducers/auth';
 import postsReducer from '../reducers/posts';
 import profileReducer from '../reducers/profile';
 import seensReducer from '../reducers/seens';
+import commentsReducer from '../reducers/comments';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -13,7 +14,8 @@ export default () => {
       auth: authReducer,
       posts: postsReducer,
       profile: profileReducer,
-      seens: seensReducer
+      seens: seensReducer,
+      comments: commentsReducer
     }),
     composeEnhancers(applyMiddleware(thunk))
   );

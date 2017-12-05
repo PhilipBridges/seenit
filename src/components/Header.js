@@ -12,16 +12,14 @@ export class Header extends Component {
   }
   handleClick = (e) => {
     const getPosts = this.props.getPosts
-    history.push(`/`)
-    this.props.fireGetPosts().then((posts, getPosts) => {
-      this.props.getPosts(posts)
+    this.props.fireGetPosts().then((posts) => {
+      history.push('/')
     })
   }
   render() {
     const user = this.props.user
     return (
       <header className="real_header">
-        {console.log(this.props)}
         <div className="content-container">
           <div className="header__content">
             <button className="button button--link" onClick={this.handleClick}>

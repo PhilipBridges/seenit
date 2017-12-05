@@ -2,17 +2,34 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import Seens from './Seens'
 import { Link } from 'react-router-dom';
-import { getPosts } from '../actions/posts';
+import { getPosts, fireGetSinglePost } from '../actions/posts';
 import Post from './Post'
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import RaisedButton from './RaisedButton';
+import { fireGetComments, getComments } from '../actions/comments';
+import Button from 'material-ui/Button';
+import { withStyles } from 'material-ui/styles';
+import NewButton from './NewButton';
+import { history } from '../routers/AppRouter';
+
 
 export class Seen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      xPosts: this.props.newPosts
+      xPosts: this.props.newPosts,
+      seenName: this.props.seen.title
     }
+  }
+  buttonClick = (e) => {
+    const title = e.currentTarget.title
+    const seen = this.state.seenName
+    const id = e.currentTarget.id
+    this.props.fireGetComments(id)
+    this.props.fireGetSinglePost(id).then((post) => {
+      history.push(`/s/${seen}/posts/${title}`)
+    })
+    
   }
   componentWillReceiveProps(nextProps) {
     this.setState({ xPosts: this.props.newPosts })
@@ -23,7 +40,6 @@ export class Seen extends Component {
   render() {
     const { title, body, author, id } = this.props.seen
     const posts = this.state.xPosts
-    const zPosts = Object.values(posts)
     return (
       <div>
         <div className="seens">
@@ -44,19 +60,14 @@ export class Seen extends Component {
         </div>
         <List className="list-body">
           {posts.map((post) => (
-            <Link className="list-item" to={{
-              pathname: `/s/${post.seen}/posts/${post.title}`,
-              post: { ...post }
-            }}
-              key={post.postid}
-              {...post}>
-              <ListItem className="mui-fix" button>
-                <p>{post.votes} - {post.title}
-                  <br />
-                  by {post.author}
-                </p>
-              </ListItem>
-            </Link>
+              <NewButton onClick={this.buttonClick} key={post.postid} {...post}>
+                <ListItem className="mui-fix" >
+                  <p>{post.votes} - {post.title}
+                    <br />
+                    by {post.author} @ {post.date}
+                  </p>
+                </ListItem>
+              </NewButton>
           ))}
         </List>
       </div>
@@ -70,7 +81,10 @@ const mapStateToProps = (state, props) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  getPosts: (id) => dispatch(getPosts(id))
+  getPosts: (id) => dispatch(getPosts(id)),
+  fireGetComments: (comments) => dispatch(fireGetComments(comments)),
+  fireGetSinglePost: (id) => dispatch(fireGetSinglePost(id)),
+  getComments: (comments) => dispatch(getComments(comments))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Seen);

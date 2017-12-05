@@ -26,6 +26,7 @@ export class AddPostPage extends React.Component {
             isAuthed={this.isAuthed}
             seen={this.seen}
             id={this.props.id}
+            titleshow={true}
           />
         </div>
       </div>

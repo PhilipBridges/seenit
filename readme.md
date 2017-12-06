@@ -1,3 +1,1 @@
-react-redux board thing
-
-wow
+A simplistic reddit-ish site

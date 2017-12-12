@@ -11,7 +11,6 @@ import Post from '../components/Post';
 import Profile from '../components/Profile';
 import Header from '../components/Header';
 import Seens from '../components/Seens';
-import SeensList from '../components/SeensList';
 import AddSeenPage from '../components/AddSeenPage';
 import Seen from '../components/Seen';
 

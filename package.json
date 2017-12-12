@@ -27,6 +27,7 @@
     "express": "^4.16.2",
     "extract-text-webpack-plugin": "^3.0.2",
     "firebase": "^4.6.0",
+    "firebase-react-paginated": "^1.0.3",
     "history": "^4.7.2",
     "lodash": "^4.17.4",
     "material-ui": "^1.0.0-beta.21",

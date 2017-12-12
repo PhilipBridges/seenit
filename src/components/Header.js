@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { startLogout, startLogin } from '../actions/auth';
+import { startLogout, startLogin, emailCreate } from '../actions/auth';
 import { fireGetPosts, getPosts } from '../actions/posts';
 import { firebase } from '../firebase/firebase';
 import { history } from '../routers/AppRouter';
+import auth from 'firebase';
 
 export class Header extends Component {
   constructor(props) {
@@ -25,16 +26,27 @@ export class Header extends Component {
             <button className="button button--link" onClick={this.handleClick}>
               <i className="material-icons">tune</i> Seenit
             </button>
-
-            <Link className="button button--link" to="/profile">
-              Profile ({this.props.user.name})
-            </Link>
-            <Link className="button button--link" to="/seens/create">Create Seen</Link>
+            {this.props.isAuthed
+              ?
+              <div>
+                <Link className="button button--link" to="/profile">
+                  Profile ({this.props.user.name})
+                </Link>
+                <Link className="button button--link" to="/seens/create">Create Seen</Link>
+              </div>
+              :
+              <div></div>
+            }
             {this.props.isAuthed
               ?
               (<button className="button button--link" onClick={this.props.startLogout}>Logout</button>)
               :
-              (<button className="button button--link" onClick={this.props.startLogin}>Login</button>)
+              (
+                <div className="button button--link">
+                  <button className="button button--link" onClick={this.props.startLogin}>Login</button>
+                  /
+                  <Link className="button button--link" to={`/login`}>Create account</Link>
+                </div>)
             }
           </div>
         </div>
@@ -52,6 +64,7 @@ const mapDispatchToProps = (dispatch) => ({
   fireGetPosts: () => dispatch(fireGetPosts()),
   startLogout: () => dispatch(startLogout()),
   startLogin: () => dispatch(startLogin()),
+  emailLogin: () => dispatch(emailLogin()),
   getPosts: () => dispatch(getPosts())
 });
 

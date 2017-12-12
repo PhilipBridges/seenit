@@ -1,20 +1,22 @@
 import React, { Component } from 'react';
 import uuid from 'uuid';
+import moment from 'moment';
 
 export class AddPostForm extends Component {
   constructor(props){
     super(props);
     const uuidv4 = require('uuid/v4');
+    const startId = this.props.id
     this.state = {
       title: '',
       body: '',
       author: this.props.user ? this.props.user.name : "",
-      date: 0,
+      date: moment(),
       seen: this.props.seen || '',
       seenname: this.props.seen || '',
       seenid: this.props.seen ? this.props.seen.id : '',
       postid: uuidv4(),
-      votes: 1,
+      votes: 0,
       voters: [this.props.id] || undefined,
       commentpostid: this.props.postId,
       commentid: uuidv4(),
@@ -40,7 +42,7 @@ export class AddPostForm extends Component {
       title,
       body,
       author,
-      date,
+      date: this.state.date.valueOf(),
       seen,
       seenid,
       postid,

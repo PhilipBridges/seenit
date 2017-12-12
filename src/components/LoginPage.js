@@ -1,19 +1,30 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { startLogin } from '../actions/auth';
+import { startLogin, emailCreate } from '../actions/auth';
+import LoginForm from './LoginForm';
+import { history } from '../routers/AppRouter';
 
-export const LoginPage = ({ startLogin }) => (
-  <div className="box-layout">
-    <div className="box-layout__box">
-      <h1 className="box-layout__title">Seenit</h1>
-      <p>Wow</p>
-      <button className="button" onClick={startLogin}>Login with Google</button>
-    </div>
-  </div>
-);
+export class LoginPage extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+  onSubmit = (user) => {
+    this.props.emailCreate(user.email, user.password).then(() => {
+      history.push('/');
+    })
+  };
+  render() {
+    return (
+      <div>
+        
+        <LoginForm className="test" onSubmit={this.onSubmit} />
+      </div>
+    )
+  }
+}
 
 const mapDispatchToProps = (dispatch) => ({
-  startLogin: () => dispatch(startLogin())
+  emailCreate: (email, password) => dispatch(emailCreate(email, password))
 });
 
 export default connect(undefined, mapDispatchToProps)(LoginPage);

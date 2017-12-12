@@ -44,8 +44,9 @@ export const fireGetSinglePost = (id) => {
       .orderByChild("postid")
       .once('value')
       .then((snapshot) => {
-        const posts = snapshot.val()
-  
+        const posts = {
+          id: snapshot.key,
+          ...snapshot.val()}
           dispatch(getSinglePost(posts))
         });
   }
@@ -123,16 +124,18 @@ export const fireUpVote = (id, user) => {
 export const fireDownVote = (id, user) => {
   return (dispatch, getState) => {
     const uid = getState().auth.uid;
-    if (database.ref(`/posts/${id}/voters`).child(`${uid}`).key !== uid) {
-      return database.ref(`/posts/${id}`)
-        .child('votes')
-        .transaction((votes) => {
-          return (votes || 0) - 1
-        }).then((fireUpdateVote(id, uid)))
-    } else {
-      console.log('equal')
-    }
-  }
+    database.ref(`/posts/${id}/voters/${uid}`).once('value')
+    .then(function (snapshot) {
+      if (!snapshot.exists()) {
+        return database.ref(`/posts/${id}`)
+          .child('votes')
+          .transaction((votes) => {
+            return (votes || 0) - 1
+          })
+          .then((fireUpdateVote(id, uid)))
+      }
+    })
+}
 }
 
 export const fireUpdateVote = (id, user) => {

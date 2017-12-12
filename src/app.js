@@ -16,9 +16,9 @@ import database from './firebase/firebase';
 
 const store = configureStore();
 const jsx = (
-    <Provider store={store}>
-      <AppRouter />
-    </Provider>
+  <Provider store={store}>
+    <AppRouter />
+  </Provider>
 );
 let hasRendered = false;
 const renderApp = () => {
@@ -38,10 +38,9 @@ firebase.auth().onAuthStateChanged((user) => {
   if (user) {
     store.dispatch(login(user.uid));
     store.dispatch(fireGetSeens())
-    store.dispatch(fireGetInfo())
-    store.dispatch(fireGetPosts()).then(() => {
+    store.dispatch(fireGetInfo()).then(() => {
       renderApp();
-    });
+    })
     if (history.location.pathname === '/login' || '/create') {
       history.push('/');
     }
@@ -49,7 +48,9 @@ firebase.auth().onAuthStateChanged((user) => {
     store.dispatch(logout())
     store.dispatch(fireGetPosts())
     store.dispatch(fireGetInfo())
-    renderApp();
-    history.push('/');
+    store.dispatch(fireGetSeens()).then(() => {
+      renderApp();
+      history.push('/');
+    })
   }
 });

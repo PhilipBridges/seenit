@@ -4,6 +4,9 @@ import { fireUpVote, fireDownVote } from '../actions/posts';
 import AddPostForm from './AddPostForm'
 import { fireAddComment, addComment, fireGetComments, getComments } from '../actions/comments';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
+import moment from 'moment';
+import ArrowDropUp from 'material-ui-icons/ArrowDropUp';
+import ArrowDropDown from 'material-ui-icons/ArrowDropDown';
 
 export class Post extends Component {
   constructor(props) {
@@ -11,10 +14,12 @@ export class Post extends Component {
     this.state = {
       post: this.props.post,
       user: this.props.userId,
-      comments: this.props.comments
+      comments: this.props.comments,
+      upvoted: false,
+      downvoted: false
     }
   }
-  componentWillMount(){
+  componentWillMount() {
     this.props.fireGetComments(this.props.location.key)
   }
   onSubmit = (comment) => {
@@ -22,22 +27,36 @@ export class Post extends Component {
   }
   upVote = () => {
     this.props.fireUpVote(this.state.post.id, this.state.user)
+    if (!this.state.downvoted) {
+      this.setState({ upvoted: true })
+    }
   }
   downVote = () => {
     this.props.fireDownVote(this.state.post.id, this.state.user)
+    if (!this.state.upvoted) {
+      this.setState({ downvoted: true })
+    }
   }
   render() {
     const { author, body, date, title, id, votes } = this.state.post
     return (
       <div className="content-container">
         Score: {votes}
-        
-        <button onClick={this.upVote}>Upvote</button>
-        <button onClick={this.downVote}>Downvote</button>
+        {console.log(this.props)}
+        {this.props.userId && this.props.userId.length > 1 ? (
+          <div>
+            <ArrowDropUp onClick={this.upVote} className={this.state.upvoted ? "upvoted" : "votes"} />
+            <ArrowDropDown onClick={this.downVote} className={this.state.downvoted ? "downvoted" : "votes"} />
+          </div>
+        )
+          :
+          (
+            <div></div>
+          )}
         <div className="list-header">
           {title}
           <br />
-          by {author} @ {date}
+          by {author} @ {moment(date).format('MMMM Do')}
         </div>
         <div className="list-body">
           <div>
@@ -55,12 +74,11 @@ export class Post extends Component {
             />
           </div>
           <div>
-          {console.log(this.props)}
             <List className="list-body">
               {this.props.comments.map((comment) => (
                 <ListItem key={comment.commentid} className="mui-fix" button>
                   by {comment.author} @ {comment.date}
-                  <br/>
+                  <br />
                   {comment.body}
                 </ListItem>
               ))}
@@ -77,7 +95,7 @@ const mapStateToProps = (state, props) => ({
   userId: state.auth.uid,
   id: state.auth.uid || undefined,
   comments: state.comments,
-  post: state.posts
+  post: state.posts,
 })
 
 const mapDispatchToProps = (dispatch) => ({

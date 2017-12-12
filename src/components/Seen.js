@@ -11,6 +11,7 @@ import Button from 'material-ui/Button';
 import { withStyles } from 'material-ui/styles';
 import NewButton from './NewButton';
 import { history } from '../routers/AppRouter';
+import moment from 'moment';
 
 
 export class Seen extends Component {
@@ -29,7 +30,6 @@ export class Seen extends Component {
     this.props.fireGetSinglePost(id).then((post) => {
       history.push(`/s/${seen}/posts/${title}`)
     })
-    
   }
   componentWillReceiveProps(nextProps) {
     this.setState({ xPosts: this.props.newPosts })
@@ -64,7 +64,7 @@ export class Seen extends Component {
                 <ListItem className="mui-fix" >
                   <p>{post.votes} - {post.title}
                     <br />
-                    by {post.author} @ {post.date}
+                    by {post.author} @ {moment(post.date).format('MMMM Do')}
                   </p>
                 </ListItem>
               </NewButton>

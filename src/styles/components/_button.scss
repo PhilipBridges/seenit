@@ -17,3 +17,21 @@
 .button--secondary {
   background: #888;
 }
+
+.upvoted {
+  background-color: orange;
+  &:hover{
+    cursor: pointer;
+  }
+}
+
+.downvoted {
+  background-color: blue;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.votes {
+  cursor: pointer;
+}

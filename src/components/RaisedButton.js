@@ -27,8 +27,6 @@ function RaisedButtons(props) {
   );
 }
 
-RaisedButtons.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
+
 
 export default withStyles(styles)(RaisedButtons);

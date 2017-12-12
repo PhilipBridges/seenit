@@ -1,9 +1,6 @@
 {
   "name": "seenit",
   "version": "1.0.0",
-  "engines": {
-    "node": "8.6.0"
-  },
   "main": "index.js",
   "author": "Filly",
   "license": "MIT",

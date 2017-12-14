@@ -10,6 +10,7 @@ import NewButton from './NewButton';
 import moment from 'moment';
 import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
+import SubdirectoryArrowLeft from 'material-ui-icons/SubdirectoryArrowLeft';
 
 export class PostList extends Component {
   constructor(props) {
@@ -46,6 +47,7 @@ export class PostList extends Component {
     })
     return (
       <div className="list-body">
+      {console.log(this.props)}
         <List className="list-body">
           {newPosts.map((post) => (
             <NewButton onClick={() => this.handleClick({...post})} key={post.value.postid} {...post}>
@@ -62,17 +64,17 @@ export class PostList extends Component {
           ) : (
             <div>
               <button
-                className='button-clear'
+                className={!this.props.hasPrevPage ? 'page-button__disabled' : 'page-button'}
                 disabled={!this.props.hasPrevPage}
                 onClick={this.props.onPrevPage}>
-                newer
+                previous
               </button>
     
               <button
-                className='button-clear'
+                className={!this.props.hasNextPage ? 'page-button__disabled' : 'page-button'}
                 disabled={!this.props.hasNextPage}
                 onClick={this.props.onNextPage}>
-                older
+                next
               </button>  
             </div>
           )}

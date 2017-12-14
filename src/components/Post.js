@@ -42,7 +42,6 @@ export class Post extends Component {
     return (
       <div className="content-container">
         Score: {votes}
-        {console.log(this.props)}
         {this.props.userId && this.props.userId.length > 1 ? (
           <div>
             <ArrowDropUp onClick={this.upVote} className={this.state.upvoted ? "upvoted" : "votes"} />
@@ -71,6 +70,7 @@ export class Post extends Component {
               postId={this.state.post.id}
               id={this.props.id}
               titleshow={false}
+              commentshow={true}
             />
           </div>
           <div>

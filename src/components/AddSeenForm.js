@@ -42,7 +42,7 @@ export class AddSeenForm extends Component {
           <form className="form" onSubmit={this.onSubmit}>
             <input className="text-input" onChange={this.onTitleChange} value={this.state.title} placeholder="title" type="text"/>
             <textarea rows="8" className="textarea" onChange={this.onBodyChange} value={this.state.body} placeholder="body"></textarea>
-            <button>Submit</button>
+            <button className="page-button">Submit</button>
           </form>
         </div>
       )

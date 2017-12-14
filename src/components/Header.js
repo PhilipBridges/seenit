@@ -12,10 +12,7 @@ export class Header extends Component {
     super(props);
   }
   handleClick = (e) => {
-    const getPosts = this.props.getPosts
-    this.props.fireGetPosts().then((posts) => {
       history.push('/')
-    })
   }
   render() {
     const user = this.props.user

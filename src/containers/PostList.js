@@ -6,5 +6,5 @@ import withFirebasePagination from 'firebase-react-paginated';
 export default withFirebasePagination(firebase)({
   path: '/posts',
   orderBy: 'votes',
-  length: 5
+  length: 10
 })(PostList);

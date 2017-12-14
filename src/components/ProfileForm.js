@@ -5,23 +5,17 @@ export class ProfileForm extends Component {
     super(props);
 
     this.state = {
-      name: '',
       bio: ''
     }
   }
   onSubmit = (e) => {
     e.preventDefault()
-    const name = this.state.name
     const bio = this.state.bio
 
     this.props.onSubmit({
       name,
       bio
     })
-  }
-  onNameChange = (e) => {
-    const name = e.target.value
-    this.setState(() => ({name}))
   }
   onBioChange = (e) => {
     const bio = e.target.value
@@ -31,7 +25,6 @@ export class ProfileForm extends Component {
       return (
         <div>
           <form className="form" onSubmit={this.onSubmit}>
-            <input className="text-input" onChange={this.onNameChange} value={this.state.name} placeholder="name" type="text"/>
             <textarea className="textarea" onChange={this.onBioChange} value={this.state.bio} placeholder="bio"></textarea>
             <button>Submit</button>
           </form>

@@ -25,7 +25,7 @@ export class Profile extends React.Component {
           <ProfileForm
             onSubmit={this.onSubmit}
           />
-          <p>Current Name: {user.name}</p>
+          <p>Name: {user.name}</p>
           <p>Current Bio: {user.bio}</p>
         </div>
       </div>

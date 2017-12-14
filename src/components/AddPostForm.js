@@ -3,7 +3,7 @@ import uuid from 'uuid';
 import moment from 'moment';
 
 export class AddPostForm extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     const uuidv4 = require('uuid/v4');
     const startId = this.props.id
@@ -20,7 +20,8 @@ export class AddPostForm extends Component {
       voters: [this.props.id] || undefined,
       commentpostid: this.props.postId,
       commentid: uuidv4(),
-      titleshow: this.props.titleshow
+      titleshow: this.props.titleshow,
+      commentshow: this.props.commentshow
     }
   }
   onSubmit = (e) => {
@@ -55,28 +56,29 @@ export class AddPostForm extends Component {
   }
   onTitleChange = (e) => {
     const title = e.target.value
-    this.setState(() => ({title}))
+    this.setState(() => ({ title }))
   }
   onBodyChange = (e) => {
     const body = e.target.value
-    this.setState(() => ({body}))
+    this.setState(() => ({ body }))
   }
-    render(){
-      return (
-        <div>
-          <form className="form" onSubmit={this.onSubmit}>
-          {(this.state.titleshow) 
-            ? 
-            <input className="text-input" onChange={this.onTitleChange} titleshow={this.state.title} value={this.state.title} placeholder="title" type="text"/>
+  render() {
+    return (
+      <div>
+        <form className="form" onSubmit={this.onSubmit}>
+          {(this.state.titleshow)
+            ?
+            <input className="text-input" onChange={this.onTitleChange} titleshow={this.state.title} value={this.state.title} placeholder="title" type="text" />
             :
             <div></div>
           }
-            <textarea rows="8" className="textarea" onChange={this.onBodyChange} value={this.state.body} placeholder="body"></textarea>
-            <button>Submit</button>
-          </form>
-        </div>
-      )
-    }
+          <textarea rows="8" className="textarea" onChange={this.onBodyChange} value={this.state.body}
+            placeholder={(this.state.commentshow) ? "Add Comment" : "Post content"}></textarea>
+          <button className="page-button">Submit</button>
+        </form>
+      </div>
+    )
   }
+}
 
 export default AddPostForm;

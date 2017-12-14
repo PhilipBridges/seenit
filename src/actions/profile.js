@@ -9,8 +9,8 @@ export const setInfo = (profile) => ({
 export const fireSetInfo = (profileData = {}) => {
   return (dispatch, getState) => {
     const uid = getState().auth.uid;
-    const { name = '', bio = '' } = profileData
-    const profile = { name, bio }
+    const { bio = '' } = profileData
+    const profile = { bio }
     database.ref(`users/${uid}/profile`).update(profile).then(() => {
       dispatch(setInfo({
         ...profile

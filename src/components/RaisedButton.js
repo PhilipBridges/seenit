@@ -6,7 +6,7 @@ import Button from 'material-ui/Button';
 const styles = theme => ({
   button: {
     margin: theme.spacing.unit,
-    backgroundColor: '#2196f3',
+    backgroundColor: '#177375',
     fontSize: '14px',
     color: 'white',
     display: 'inline'

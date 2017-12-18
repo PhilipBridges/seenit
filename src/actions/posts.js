@@ -27,6 +27,48 @@ export const fireGetPosts = () => {
   }
 }
 
+export const fireNextPosts = (e) => {
+  return (dispatch, getState) => {
+    const start = e
+    return database.ref(`/posts`)
+      .orderByChild('votes')
+      .startAt(0, start)
+      .limitToFirst(6)
+      .once('value')
+      .then((snapshot) => {
+        const posts = []
+        snapshot.forEach((childSnapshot) => {
+          posts.push({
+            id: childSnapshot.key,
+            ...childSnapshot.val()
+          })
+          dispatch(getPosts(posts))
+        });
+      });
+  }
+}
+
+export const firePrevPosts = (e) => {
+  return (dispatch, getState) => {
+    const start = e
+    return database.ref(`/posts`)
+      .orderByChild('votes')
+      .startAt(0, start)
+      .limitToLast(6)
+      .once('value')
+      .then((snapshot) => {
+        const posts = []
+        snapshot.forEach((childSnapshot) => {
+          posts.push({
+            id: childSnapshot.key,
+            ...childSnapshot.val()
+          })
+          dispatch(getPosts(posts))
+        });
+      });
+  }
+}
+
 export const addPost = (post) => ({
   type: 'ADD_POST',
   post
@@ -46,9 +88,10 @@ export const fireGetSinglePost = (id) => {
       .then((snapshot) => {
         const posts = {
           id: snapshot.key,
-          ...snapshot.val()}
-          dispatch(getSinglePost(posts))
-        });
+          ...snapshot.val()
+        }
+        dispatch(getSinglePost(posts))
+      });
   }
 }
 
@@ -125,17 +168,17 @@ export const fireDownVote = (id, user) => {
   return (dispatch, getState) => {
     const uid = getState().auth.uid;
     database.ref(`/posts/${id}/voters/${uid}`).once('value')
-    .then(function (snapshot) {
-      if (!snapshot.exists()) {
-        return database.ref(`/posts/${id}`)
-          .child('votes')
-          .transaction((votes) => {
-            return (votes || 0) - 1
-          })
-          .then((fireUpdateVote(id, uid)))
-      }
-    })
-}
+      .then(function (snapshot) {
+        if (!snapshot.exists()) {
+          return database.ref(`/posts/${id}`)
+            .child('votes')
+            .transaction((votes) => {
+              return (votes || 0) - 1
+            })
+            .then((fireUpdateVote(id, uid)))
+        }
+      })
+  }
 }
 
 export const fireUpdateVote = (id, user) => {

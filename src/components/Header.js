@@ -6,13 +6,18 @@ import { fireGetPosts, getPosts } from '../actions/posts';
 import { firebase } from '../firebase/firebase';
 import { history } from '../routers/AppRouter';
 import auth from 'firebase';
+const injectTapEventPlugin = require("react-tap-event-plugin");
+injectTapEventPlugin();
 
 export class Header extends Component {
   constructor(props) {
     super(props);
   }
   handleClick = (e) => {
+    this.props.fireGetPosts().then((posts) => {
       history.push('/')
+    })
+    
   }
   render() {
     const user = this.props.user
@@ -20,7 +25,7 @@ export class Header extends Component {
       <header className="real_header">
         <div className="content-container">
           <div className="header__content">
-            <button className="button button--link" onClick={this.handleClick}>
+            <button className="button button--link" onClick={this.handleClick} onTouchTap={this.handleClick}>
               <i className="material-icons">tune</i> Seenit
             </button>
             {this.props.isAuthed

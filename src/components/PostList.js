@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Post from './Post';
 import { Link } from 'react-router-dom'
-import { fireGetPosts, getPosts, fireGetSinglePost } from '../actions/posts';
+import { fireGetPosts, getPosts, fireGetSinglePost, fireNextPosts, firePrevPosts } from '../actions/posts';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import { fireGetComments, getComments } from '../actions/comments';
 import { history } from '../routers/AppRouter';
@@ -11,50 +11,48 @@ import moment from 'moment';
 import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
 import SubdirectoryArrowLeft from 'material-ui-icons/SubdirectoryArrowLeft';
+const injectTapEventPlugin = require("react-tap-event-plugin");
 
 export class PostList extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      posts: this.props.pageItems || []
+      posts: this.props.posts
     }
   }
   handleClick = (e) => {
-    const title = e.value.title
-    const seen = e.value.seen
+    const title = e.title
+    const seen = e.seen
     const id = e.id
     this.props.fireGetComments(id)
     this.props.fireGetSinglePost(id).then((post) => {
       history.push(`/s/${seen}/posts/${title}`)
     })
   }
-  componentWillReceiveProps() {
-    if (this.props.posts.length >= 1) {
-      this.setState({ posts: this.props.pageItems })
-    } else {
-      this.setState({ posts: [] })
-    }
+  nextClick = (e) => {
+    this.props.fireNextPosts(e)
   }
-  componentWillMount() {
-    this.props.fireGetPosts()
+  prevClick = (e) => {
+    this.props.firePrevPosts(e)
+  }
+  componentWillReceiveProps(nextProps) {
+    this.setState({ posts: this.props.posts })
   }
   componentWillUnmount() {
     this.setState({ posts: [] })
   }
   render() {
-    const newPosts = this.props.pageItems.sort((a, b) => {
-      return a.votes < b.votes
-    })
     return (
       <div className="list-body">
-      {console.log(this.props)}
         <List className="list-body">
-          {newPosts.map((post) => (
-            <NewButton onClick={() => this.handleClick({...post})} key={post.value.postid} {...post}>
+          {this.state.posts.slice(1, 6).sort((a, b) => {
+            return a.votes < b.votes
+          }).map((post) => (
+            <NewButton onClick={() => this.handleClick({ ...post })} key={post.postid} {...post}>
               <ListItem className="mui-fix" >
-                <p>{post.value.votes} - {post.value.title}
+                <p>{post.votes} - {post.title}
                   <br />
-                  by {post.value.author} @ {moment(post.value.date).format('MMMM Do')} in {post.value.seen}
+                  by {post.author} @ {moment(post.date).format('MMMM Do')} in {post.seen}
                 </p>
               </ListItem>
             </NewButton>
@@ -62,22 +60,24 @@ export class PostList extends Component {
           {(this.props.isLoading) ? (
             <div>loading…</div>
           ) : (
-            <div>
-              <button
-                className={!this.props.hasPrevPage ? 'page-button__disabled' : 'page-button'}
-                disabled={!this.props.hasPrevPage}
-                onClick={this.props.onPrevPage}>
-                previous
+              <div>
+                <button
+                  className={!this.props.posts.length > 1 ? 'page-button__disabled' : 'page-button'}
+                  onClick={() => this.prevClick(this.state.posts[0].id)}
+                  onTouchTap={() => this.prevClick(this.state.posts[1].id)}
+                >
+                  first page
               </button>
-    
-              <button
-                className={!this.props.hasNextPage ? 'page-button__disabled' : 'page-button'}
-                disabled={!this.props.hasNextPage}
-                onClick={this.props.onNextPage}>
-                next
-              </button>  
-            </div>
-          )}
+
+                <button
+                  className={!this.props.posts.length > 1 ? 'page-button__disabled' : 'page-button'}
+                  onClick={() => this.nextClick(this.state.posts[5].id)}
+                  onTouchTap={() => this.nextClick(this.state.posts[5].id)}
+                >
+                  next
+              </button>
+              </div>
+            )}
         </List>
       </div>
     )
@@ -91,6 +91,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   fireGetPosts: () => dispatch(fireGetPosts()),
+  fireNextPosts: (e) => dispatch(fireNextPosts(e)),
+  firePrevPosts: (e) => dispatch(firePrevPosts(e)),
   getPosts: (id) => dispatch(getPosts(id)),
   fireGetComments: (comments) => dispatch(fireGetComments(comments)),
   getComments: (comments) => dispatch(getComments(comments)),

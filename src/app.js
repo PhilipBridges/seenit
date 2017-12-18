@@ -38,6 +38,7 @@ firebase.auth().onAuthStateChanged((user) => {
   if (user) {
     store.dispatch(login(user.uid));
     store.dispatch(fireGetSeens())
+    store.dispatch(fireGetPosts())
     store.dispatch(fireGetInfo()).then(() => {
       renderApp();
     })
@@ -47,6 +48,7 @@ firebase.auth().onAuthStateChanged((user) => {
   } else {
     store.dispatch(logout())
     store.dispatch(fireGetInfo())
+    store.dispatch(fireGetPosts())
     store.dispatch(fireGetSeens()).then(() => {
       renderApp();
       history.push('/');

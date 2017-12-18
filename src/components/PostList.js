@@ -63,7 +63,7 @@ export class PostList extends Component {
               <div>
                 <button
                   className={!this.props.posts.length > 1 ? 'page-button__disabled' : 'page-button'}
-                  onClick={() => this.prevClick(this.state.posts[0].id)}
+                  onClick={() => this.prevClick(this.state.posts[1].id)}
                   onTouchTap={() => this.prevClick(this.state.posts[1].id)}
                 >
                   first page

@@ -11,7 +11,7 @@ import { firebase } from './firebase/firebase';
 import LoadingPage from './components/LoadingPage';
 import { fireGetPosts } from './actions/posts';
 import { fireGetInfo } from './actions/profile'
-import { fireGetSeens } from './actions/seens'
+import { fireGetSeens, fireGetCities } from './actions/seens'
 import database from './firebase/firebase';
 
 const store = configureStore();
@@ -35,23 +35,30 @@ const renderApp = () => {
 ReactDOM.render(<LoadingPage />, document.getElementById('app'));
 
 firebase.auth().onAuthStateChanged((user) => {
-  if (user) {
-    store.dispatch(login(user.uid));
-    store.dispatch(fireGetSeens())
-    store.dispatch(fireGetPosts())
+    store.dispatch(fireGetCities())
     store.dispatch(fireGetInfo()).then(() => {
       renderApp();
     })
-    if (history.location.pathname === '/login' || '/create') {
-      history.push('/');
-    }
-  } else {
-    store.dispatch(logout())
-    store.dispatch(fireGetInfo())
-    store.dispatch(fireGetPosts())
-    store.dispatch(fireGetSeens()).then(() => {
-      renderApp();
-      history.push('/');
-    })
-  }
-});
+  })
+
+// firebase.auth().onAuthStateChanged((user) => {
+//   if (user) {
+//     store.dispatch(login(user.uid));
+//     store.dispatch(fireGetSeens())
+//     store.dispatch(fireGetPosts())
+//     store.dispatch(fireGetInfo()).then(() => {
+//       renderApp();
+//     })
+//     if (history.location.pathname === '/login' || '/create') {
+//       history.push('/');
+//     }
+//   } else {
+//     store.dispatch(logout())
+//     store.dispatch(fireGetInfo())
+//     store.dispatch(fireGetPosts())
+//     store.dispatch(fireGetSeens()).then(() => {
+//       renderApp();
+//       history.push('/');
+//     })
+//   }
+// });

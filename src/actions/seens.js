@@ -1,5 +1,6 @@
 import uuid from 'uuid';
-import database from '../firebase/firebase';
+import database from '../firebase/firestore';
+const db = firebase.firestore();
 
 // Seens
 export const getSeens = (seens = []) => ({
@@ -23,6 +24,25 @@ export const fireGetSeens = () => {
           dispatch(getSeens(seens))
         })
       })
+  }
+}
+
+export const fireGetCities = () => {
+  return (dispatch, getState) => {
+    const uid = getState().auth.uid;
+    return db.collection("cities")
+      .orderBy("population")
+      .limit(25)
+      .get()
+      .then((data) => {
+        data.forEach((snapshot) => {
+          console.log(snapshot.data())
+        })
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    dispatch(getSeens(seens))
   }
 }
 

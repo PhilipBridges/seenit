@@ -1,6 +1,7 @@
+import firebase from 'firebase'
 import uuid from 'uuid';
-import database from '../firebase/firestore';
-const db = firebase.firestore();
+require("firebase/firestore");
+import db from '../firebase/firebase';
 
 // Seens
 export const getSeens = (seens = []) => ({
@@ -11,38 +12,22 @@ export const getSeens = (seens = []) => ({
 export const fireGetSeens = () => {
   return (dispatch, getState) => {
     const uid = getState().auth.uid;
-    return database.ref(`/seens`)
-      .once('value')
-      .then((snapshot) => {
-        const seens = []
-
-        snapshot.forEach((childSnapshot) => {
-          seens.push({
-            id: childSnapshot.key,
-            ...childSnapshot.val()
-          })
-          dispatch(getSeens(seens))
-        })
-      })
-  }
-}
-
-export const fireGetCities = () => {
-  return (dispatch, getState) => {
-    const uid = getState().auth.uid;
-    return db.collection("cities")
-      .orderBy("population")
+    return db.collection("seens")
       .limit(25)
       .get()
       .then((data) => {
+        const seens = []
         data.forEach((snapshot) => {
-          console.log(snapshot.data())
+          seens.push({
+            id: snapshot.id,
+            ...snapshot.data()
+          })
+          dispatch(getSeens(seens))
         })
       })
       .catch((err) => {
         console.log(err)
       })
-    dispatch(getSeens(seens))
   }
 }
 
@@ -62,9 +47,9 @@ export const fireAddSeen = (seenData = {}) => {
       date = 0
     } = seenData;
     const seen = { title, body, author, date }
-    database.ref(`/seens/`).push(seen).then((ref) => {
+    db.collection(`/seens/`).add(seen).then((ref) => {
       dispatch(addSeen({
-        id: ref.database.ref(`/posts/${id}`),
+        id: ref.id,
         ...seen
       }))
     });

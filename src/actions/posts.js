@@ -1,5 +1,7 @@
+import firebase from 'firebase'
 import uuid from 'uuid';
-import database from '../firebase/firebase';
+require("firebase/firestore");
+import db from '../firebase/firebase';
 
 // All Posts
 export const getPosts = (posts = []) => ({
@@ -8,18 +10,17 @@ export const getPosts = (posts = []) => ({
 });
 
 export const fireGetPosts = () => {
-  return (dispatch, getState) => {
+  return (dispatch, getState) => {  
     const uid = getState().auth.uid;
-    return database.ref(`/posts`)
-      .orderByChild(`votes`)
-      .limitToFirst(15)
-      .once('value')
+    return db.collection(`/posts`)
+      .limit(15)
+      .get()
       .then((snapshot) => {
         const posts = []
         snapshot.forEach((childSnapshot) => {
           posts.push({
-            id: childSnapshot.key,
-            ...childSnapshot.val()
+            id: childSnapshot.id,
+            ...childSnapshot.data()
           })
           dispatch(getPosts(posts))
         });
@@ -30,17 +31,17 @@ export const fireGetPosts = () => {
 export const fireNextPosts = (e) => {
   return (dispatch, getState) => {
     const start = e
-    return database.ref(`/posts`)
-      .orderByChild('votes')
+    return db.collection(`/posts`)
+      .orderBy('votes')
       .startAt(0, start)
-      .limitToFirst(6)
-      .once('value')
+      .limit(6)
+      .get()
       .then((snapshot) => {
         const posts = []
         snapshot.forEach((childSnapshot) => {
           posts.push({
-            id: childSnapshot.key,
-            ...childSnapshot.val()
+            id: childSnapshot.id,
+            ...childSnapshot.data()
           })
           dispatch(getPosts(posts))
         });
@@ -51,17 +52,17 @@ export const fireNextPosts = (e) => {
 export const firePrevPosts = (e) => {
   return (dispatch, getState) => {
     const start = e
-    return database.ref(`/posts`)
-      .orderByChild('votes')
+    return db.collection(`/posts`)
+      .orderBy('votes')
       .startAt(0, start)
-      .limitToLast(6)
-      .once('value')
+      .limit(6)
+      .get()
       .then((snapshot) => {
         const posts = []
         snapshot.forEach((childSnapshot) => {
           posts.push({
-            id: childSnapshot.key,
-            ...childSnapshot.val()
+            id: childSnapshot.id,
+            ...childSnapshot.data()
           })
           dispatch(getPosts(posts))
         });
@@ -82,13 +83,13 @@ export const getSinglePost = (posts = []) => ({
 
 export const fireGetSinglePost = (id) => {
   return (dispatch, getState) => {
-    return database.ref(`/posts/${id}`)
-      .orderByChild("postid")
+    return db.collection(`/posts/${id}`)
+      .orderBy("postid")
       .once('value')
       .then((snapshot) => {
         const posts = {
-          id: snapshot.key,
-          ...snapshot.val()
+          id: snapshot.id,
+          ...snapshot.data()
         }
         dispatch(getSinglePost(posts))
       });
@@ -111,9 +112,9 @@ export const fireAddPost = (postData = {}) => {
       voters = ''
     } = postData;
     const post = { title, body, author, date, seen, seenid, postid, votes, voters }
-    database.ref(`/posts`).push(post).then((ref) => {
+    db.collection(`/posts`).add(post).then((ref) => {
       dispatch(addPost({
-        id: ref.key,
+        id: ref.id,
         ...post
       }))
     });
@@ -128,16 +129,17 @@ export const getSubSeens = (posts = []) => ({
 
 export const fireGetSubPosts = (id) => {
   return (dispatch, getState) => {
-    return database.ref(`/posts`)
-      .orderByChild("seenid")
-      .equalTo(id)
-      .once('value')
+    const target = (db.collection(`/posts`).doc(id))
+    return db.collection(`/posts`)
+      .orderBy("seenid")
+      .where("target", "==", "id")
+      .get()
       .then((snapshot) => {
         const posts = []
         snapshot.forEach((childSnapshot) => {
           posts.push({
-            id: childSnapshot.key,
-            ...childSnapshot.val()
+            id: childSnapshot.id,
+            ...childSnapshot.data()
           });
           dispatch(getSubSeens(posts))
         });
@@ -149,12 +151,12 @@ export const fireGetSubPosts = (id) => {
 export const fireUpVote = (id, user) => {
   return (dispatch, getState) => {
     const uid = getState().auth.uid;
-    database.ref(`/posts/${id}/voters/${uid}`).once('value')
+    db.collection(`/posts/${id}/voters/${uid}`).once('value')
       .then(function (snapshot) {
         if (!snapshot.exists()) {
-          return database.ref(`/posts/${id}`)
-            .child('votes')
-            .transaction((votes) => {
+          return db.collection(`/posts/${id}`)
+            .docs('votes')
+            .db.runTransaction((votes) => {
               return (votes || 0) + 1
             })
             .then((fireUpdateVote(id, uid)))
@@ -167,12 +169,12 @@ export const fireUpVote = (id, user) => {
 export const fireDownVote = (id, user) => {
   return (dispatch, getState) => {
     const uid = getState().auth.uid;
-    database.ref(`/posts/${id}/voters/${uid}`).once('value')
+    db.collection(`/posts/${id}/voters/${uid}`).once('value')
       .then(function (snapshot) {
         if (!snapshot.exists()) {
-          return database.ref(`/posts/${id}`)
-            .child('votes')
-            .transaction((votes) => {
+          return db.collection(`/posts/${id}`)
+            .docs('votes')
+            .db.runTransaction((votes) => {
               return (votes || 0) - 1
             })
             .then((fireUpdateVote(id, uid)))
@@ -182,7 +184,7 @@ export const fireDownVote = (id, user) => {
 }
 
 export const fireUpdateVote = (id, user) => {
-  return database.ref(`/posts/${id}/voters`)
-    .child(`${user}`)
+  return db.collection(`/posts/${id}/voters`)
+    .docs(`${user}`)
     .push(user)
 }

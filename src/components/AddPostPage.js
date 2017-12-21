@@ -5,8 +5,9 @@ import { fireAddPost } from '../actions/posts';
 
 export class AddPostPage extends React.Component {
   onSubmit = (post) => {
-    this.props.fireAddPost(post);
-    this.props.history.push('/');
+    const title = this.props.seen.title
+    this.props.fireAddPost(post)
+    this.props.history.push(`/s/${title}`)
   };
   user = this.props.user
   isAuthed = this.props.isAuthed

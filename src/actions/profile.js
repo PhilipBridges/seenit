@@ -1,5 +1,7 @@
+import firebase from 'firebase'
 import uuid from 'uuid';
-import database from '../firebase/firebase';
+require("firebase/firestore");
+const db = firebase.firestore();
 
 export const setInfo = (profile) => ({
   type: 'SET_USER',
@@ -9,13 +11,8 @@ export const setInfo = (profile) => ({
 export const fireSetInfo = (profileData = {}) => {
   return (dispatch, getState) => {
     const uid = getState().auth.uid;
-    const { bio = '' } = profileData
-    const profile = { bio }
-    database.ref(`users/${uid}/profile`).update(profile).then(() => {
-      dispatch(setInfo({
-        ...profile
-      }))
-    })
+    const { name = '', bio = '' } = profileData
+    db.collection("users").doc(uid).set(profileData)
   }
 }
 
@@ -27,13 +24,11 @@ export const getInfo = (profile) => ({
 export const fireGetInfo = () => {
   return (dispatch, getState) => {
     const uid = getState().auth.uid;
-    return database.ref(`users/${uid}/profile`)
-      .once('value')
+    return db.collection(`users`)
+      .doc(uid)
+      .get()
       .then((snapshot) => {
-        
-        const data = snapshot.val()
-        const profile = {...data}
-          dispatch(getInfo(profile))
-        })
+        dispatch(getInfo(snapshot.data()))
+      })
   }
 }

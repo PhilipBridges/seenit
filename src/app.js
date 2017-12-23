@@ -38,7 +38,7 @@ firebase.auth().onAuthStateChanged((user) => {
     store.dispatch(fireGetInfo()).then(() => {
       renderApp();
     })
-    if (history.location.pathname === '/login' || '/create') {
+    if (history.location.pathname === '/login' || '/create' || '/s/*') {
       history.push('/');
     }
   } else {

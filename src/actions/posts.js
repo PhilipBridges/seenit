@@ -10,10 +10,11 @@ export const getPosts = (posts = []) => ({
 });
 
 export const fireGetPosts = () => {
-  return (dispatch, getState) => {  
+  return (dispatch, getState) => {
     const uid = getState().auth.uid;
     return db.collection(`/posts`)
-      .limit(15)
+      .orderBy('votes' , 'desc')
+      .limit(1)
       .get()
       .then((snapshot) => {
         const posts = []
@@ -31,10 +32,11 @@ export const fireGetPosts = () => {
 export const fireNextPosts = (e) => {
   return (dispatch, getState) => {
     const start = e
+    console.log(start)
     return db.collection(`/posts`)
-      .orderBy('votes')
-      .startAt(0, start)
-      .limit(6)
+      .orderBy('votes', 'desc')
+      .startAfter(start)
+      .limit(1)
       .get()
       .then((snapshot) => {
         const posts = []
@@ -52,10 +54,11 @@ export const fireNextPosts = (e) => {
 export const firePrevPosts = (e) => {
   return (dispatch, getState) => {
     const start = e
+    console.log(start)
     return db.collection(`/posts`)
-      .orderBy('votes')
-      .startAt(0, start)
-      .limit(6)
+      .orderBy('votes', 'asc')
+      .startAfter(start)
+      .limit(1)
       .get()
       .then((snapshot) => {
         const posts = []
@@ -83,9 +86,10 @@ export const getSinglePost = (posts = []) => ({
 
 export const fireGetSinglePost = (id) => {
   return (dispatch, getState) => {
-    return db.collection(`/posts/${id}`)
-      .orderBy("postid")
-      .once('value')
+    const target = (db.collection(`/posts`).doc(id))
+    return db.collection(`/posts/`)
+      .doc(id)
+      .get()
       .then((snapshot) => {
         const posts = {
           id: snapshot.id,
@@ -109,7 +113,7 @@ export const fireAddPost = (postData = {}) => {
       seenid = '',
       postid = '',
       votes = 0,
-      voters = ''
+      voters = {}
     } = postData;
     const post = { title, body, author, date, seen, seenid, postid, votes, voters }
     db.collection(`/posts`).add(post).then((ref) => {
@@ -151,14 +155,20 @@ export const fireGetSubPosts = (id) => {
 export const fireUpVote = (id, user) => {
   return (dispatch, getState) => {
     const uid = getState().auth.uid;
-    db.collection(`/posts/${id}/voters/${uid}`).once('value')
+    const ref = db.collection(`/posts/`).doc(id)
+    return db.collection(`/posts/`)
+      .doc(id)
+      .collection('voters')
+      .doc(uid)
+      .get()
       .then(function (snapshot) {
-        if (!snapshot.exists()) {
-          return db.collection(`/posts/${id}`)
-            .docs('votes')
-            .db.runTransaction((votes) => {
-              return (votes || 0) + 1
+        if (snapshot.exists === false) {
+          return db.runTransaction(function (transaction) {
+            return transaction.get(ref).then(function (post) {
+              let newVote = post.data().votes + 1
+              transaction.update(ref, { votes: newVote })
             })
+          })
             .then((fireUpdateVote(id, uid)))
         }
       })
@@ -169,14 +179,20 @@ export const fireUpVote = (id, user) => {
 export const fireDownVote = (id, user) => {
   return (dispatch, getState) => {
     const uid = getState().auth.uid;
-    db.collection(`/posts/${id}/voters/${uid}`).once('value')
+    const ref = db.collection(`/posts/`).doc(id)
+    return db.collection(`/posts/`)
+      .doc(id)
+      .collection('voters')
+      .doc(uid)
+      .get()
       .then(function (snapshot) {
-        if (!snapshot.exists()) {
-          return db.collection(`/posts/${id}`)
-            .docs('votes')
-            .db.runTransaction((votes) => {
-              return (votes || 0) - 1
+        if (snapshot.exists === false) {
+          return db.runTransaction(function (transaction) {
+            return transaction.get(ref).then(function (post) {
+              let newVote = post.data().votes - 1
+              transaction.update(ref, { votes: newVote })
             })
+          })
             .then((fireUpdateVote(id, uid)))
         }
       })
@@ -184,7 +200,9 @@ export const fireDownVote = (id, user) => {
 }
 
 export const fireUpdateVote = (id, user) => {
-  return db.collection(`/posts/${id}/voters`)
-    .docs(`${user}`)
-    .push(user)
+  db.collection(`/posts/`)
+    .doc(id)
+    .collection('voters')
+    .doc(user)
+    .set({ id: user })
 }

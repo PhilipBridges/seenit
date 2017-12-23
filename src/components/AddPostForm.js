@@ -17,7 +17,7 @@ export class AddPostForm extends Component {
       seenid: this.props.seen ? this.props.seen.id : '',
       postid: uuidv4(),
       votes: 0,
-      voters: [this.props.id] || undefined,
+      voters: { id: this.props.id } || undefined, 
       commentpostid: this.props.postId,
       commentid: uuidv4(),
       titleshow: this.props.titleshow,

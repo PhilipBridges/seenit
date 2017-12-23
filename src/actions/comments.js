@@ -1,5 +1,7 @@
+import firebase from 'firebase'
 import uuid from 'uuid';
-import database from '../firebase/firebase';
+require("firebase/firestore");
+import db from '../firebase/firebase';
 
 // Add comments
 export const addComment = (comment) => ({
@@ -24,7 +26,7 @@ export const fireAddComment = (commentData = {}) => {
       seenname = '',
     } = commentData;
     const comment = { title, body, author, date, seen, seenname, seenid, commentpostid, commentid, votes, voters }
-    database.ref(`/posts/${commentpostid}/comments`).push(comment).then((ref) => {
+    db.collection(`/posts/${commentpostid}/comments`).add(comment).then((ref) => {
       dispatch(addComment({
         id: ref.key,
         ...comment
@@ -43,14 +45,14 @@ export const getComments = (comments) => ({
 export const fireGetComments = (id) => {
   return (dispatch, getState) => {
     const uid = getState().auth.uid;
-    return database.ref(`/posts/${id}/comments`)
-      .once('value')
+    return db.collection(`/posts/${id}/comments`)
+      .get()
       .then((snapshot) => {
         const comments = []
         snapshot.forEach((childSnapshot) => {
           comments.push({
-            id: childSnapshot.key,
-            ...childSnapshot.val()
+            id: childSnapshot.id,
+            ...childSnapshot.data()
           })
           dispatch(getComments(comments))
         });

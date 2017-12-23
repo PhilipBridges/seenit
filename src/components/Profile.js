@@ -7,6 +7,7 @@ import { firebase } from '../firebase/firebase';
 export class Profile extends React.Component {
   onSubmit = (profile) => {
     this.props.fireSetInfo(profile);
+    this.props.fireGetInfo();
     this.props.history.push('/');
   };
 

@@ -45,7 +45,7 @@ export class PostList extends Component {
     return (
       <div className="list-body">
         <List className="list-body">
-          {this.state.posts.slice(1, 6).sort((a, b) => {
+          {this.state.posts.sort((a, b) => {
             return a.votes < b.votes
           }).map((post) => (
             <NewButton onClick={() => this.handleClick({ ...post })} key={post.postid} {...post}>
@@ -63,16 +63,16 @@ export class PostList extends Component {
               <div>
                 <button
                   className={!this.props.posts.length > 1 ? 'page-button__disabled' : 'page-button'}
-                  onClick={() => this.prevClick(this.state.posts[1].id)}
-                  onTouchTap={() => this.prevClick(this.state.posts[1].id)}
+                  onClick={() => this.prevClick(this.state.posts[0].votes)}
+                  onTouchTap={() => this.prevClick(this.state.posts[0].votes)}
                 >
                   first page
               </button>
 
                 <button
                   className={!this.props.posts.length > 1 ? 'page-button__disabled' : 'page-button'}
-                  onClick={() => this.nextClick(this.state.posts[5].id)}
-                  onTouchTap={() => this.nextClick(this.state.posts[5].id)}
+                  onClick={() => this.nextClick(this.state.posts[this.state.posts.length -1 ].votes)}
+                  onTouchTap={() => this.nextClick(this.state.posts[this.state.posts.length -1 ].votes)}
                 >
                   next
               </button>

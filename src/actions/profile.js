@@ -28,7 +28,9 @@ export const fireGetInfo = () => {
       .doc(uid)
       .get()
       .then((snapshot) => {
-        dispatch(getInfo(snapshot.data()))
+        if (snapshot.exists) {
+          dispatch(getInfo(snapshot.data()))
+        }
       })
   }
 }

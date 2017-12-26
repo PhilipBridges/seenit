@@ -43,7 +43,6 @@ firebase.auth().onAuthStateChanged((user) => {
     }
   } else {
     store.dispatch(logout())
-    store.dispatch(fireGetInfo())
     store.dispatch(fireGetPosts())
     store.dispatch(fireGetSeens()).then(() => {
       renderApp();

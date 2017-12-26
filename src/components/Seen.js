@@ -32,9 +32,12 @@ export class Seen extends Component {
     })
   }
   componentWillReceiveProps(nextProps) {
-    this.setState({ xPosts: this.props.newPosts })
+      this.setState({ xPosts: this.props.newPosts })
   }
   componentWillMount() {
+    this.setState({ xPosts: [] })
+  }
+  componentDidMount(){
     this.setState({ xPosts: this.props.newPosts })
   }
   render() {
@@ -60,14 +63,14 @@ export class Seen extends Component {
         </div>
         <List className="list-body">
           {posts.map((post) => (
-              <NewButton onClick={this.buttonClick} key={post.postid} {...post}>
-                <ListItem className="mui-fix" >
-                  <p>{post.votes} - {post.title}
-                    <br />
-                    by {post.author} @ {moment(post.date).format('MMMM Do')}
-                  </p>
-                </ListItem>
-              </NewButton>
+            <NewButton onClick={this.buttonClick} key={post.postid || post.title} {...post}>
+              <ListItem className="mui-fix" >
+                <p>{post.votes} - {post.title}
+                  <br />
+                  by {post.author} @ {moment(post.date).format('MMMM Do')}
+                </p>
+              </ListItem>
+            </NewButton>
           ))}
         </List>
       </div>

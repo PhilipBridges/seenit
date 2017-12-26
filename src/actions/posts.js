@@ -13,8 +13,8 @@ export const fireGetPosts = () => {
   return (dispatch, getState) => {
     const uid = getState().auth.uid;
     return db.collection(`/posts`)
-      .orderBy('votes' , 'desc')
-      .limit(1)
+      .orderBy('votes', 'desc')
+      .limit(10)
       .get()
       .then((snapshot) => {
         const posts = []
@@ -32,11 +32,10 @@ export const fireGetPosts = () => {
 export const fireNextPosts = (e) => {
   return (dispatch, getState) => {
     const start = e
-    console.log(start)
     return db.collection(`/posts`)
       .orderBy('votes', 'desc')
       .startAfter(start)
-      .limit(1)
+      .limit(10)
       .get()
       .then((snapshot) => {
         const posts = []
@@ -54,11 +53,10 @@ export const fireNextPosts = (e) => {
 export const firePrevPosts = (e) => {
   return (dispatch, getState) => {
     const start = e
-    console.log(start)
     return db.collection(`/posts`)
       .orderBy('votes', 'asc')
       .startAfter(start)
-      .limit(1)
+      .limit(10)
       .get()
       .then((snapshot) => {
         const posts = []
@@ -133,20 +131,26 @@ export const getSubSeens = (posts = []) => ({
 
 export const fireGetSubPosts = (id) => {
   return (dispatch, getState) => {
-    const target = (db.collection(`/posts`).doc(id))
     return db.collection(`/posts`)
-      .orderBy("seenid")
-      .where("target", "==", "id")
+      .where("seenid", "==", id)
       .get()
       .then((snapshot) => {
-        const posts = []
-        snapshot.forEach((childSnapshot) => {
-          posts.push({
-            id: childSnapshot.id,
-            ...childSnapshot.data()
+        if (!snapshot.empty) {
+          const posts = []
+          snapshot.forEach((childSnapshot) => {
+            posts.push({
+              id: childSnapshot.id,
+              ...childSnapshot.data()
+            });
+            console.log(posts)
+            dispatch(getSubSeens(posts))
           });
-          dispatch(getSubSeens(posts))
-        });
+        } else {
+          const emp = [{
+            title: 'No Posts!'
+          }]
+          dispatch(getSubSeens(emp))
+        }
       });
   }
 }

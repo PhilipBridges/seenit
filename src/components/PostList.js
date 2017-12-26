@@ -10,7 +10,6 @@ import NewButton from './NewButton';
 import moment from 'moment';
 import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
-import SubdirectoryArrowLeft from 'material-ui-icons/SubdirectoryArrowLeft';
 const injectTapEventPlugin = require("react-tap-event-plugin");
 
 export class PostList extends Component {
@@ -66,7 +65,7 @@ export class PostList extends Component {
                   onClick={() => this.prevClick(this.state.posts[0].votes)}
                   onTouchTap={() => this.prevClick(this.state.posts[0].votes)}
                 >
-                  first page
+                  prev
               </button>
 
                 <button

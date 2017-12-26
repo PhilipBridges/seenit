@@ -77,7 +77,7 @@ export class Post extends Component {
             <List className="list-body">
               {this.props.comments.map((comment) => (
                 <ListItem key={comment.commentid} className="mui-fix" button>
-                  by {comment.author} @ {comment.date}
+                  by {comment.author} @ {moment(comment.date).format('MMMM Do')}
                   <br />
                   {comment.body}
                 </ListItem>

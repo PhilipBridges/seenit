@@ -8,7 +8,6 @@ import { fireGetComments, getComments } from '../actions/comments';
 import { history } from '../routers/AppRouter';
 import NewButton from './NewButton';
 import moment from 'moment';
-import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
 const injectTapEventPlugin = require("react-tap-event-plugin");
 
@@ -41,12 +40,17 @@ export class PostList extends Component {
     this.setState({ posts: [] })
   }
   render() {
+    const arr = this.state.posts.sort((a, b) => {
+      if (a.votes === b.votes) {
+        return a.date < b.date
+      } else {
+        return a.votes < b.votes
+      }
+    })
     return (
       <div className="list-body">
         <List className="list-body">
-          {this.state.posts.sort((a, b) => {
-            return a.votes < b.votes
-          }).map((post) => (
+          {arr.map((post) => (
             <NewButton onClick={() => this.handleClick({ ...post })} key={post.postid} {...post}>
               <ListItem className="mui-fix" >
                 <p>{post.votes} - {post.title}
@@ -56,27 +60,25 @@ export class PostList extends Component {
               </ListItem>
             </NewButton>
           ))}
-          {(this.props.isLoading) ? (
-            <div>loading…</div>
-          ) : (
-              <div>
-                <button
-                  className={!this.props.posts.length > 1 ? 'page-button__disabled' : 'page-button'}
-                  onClick={() => this.prevClick(this.state.posts[0].votes)}
-                  onTouchTap={() => this.prevClick(this.state.posts[0].votes)}
-                >
-                  prev
+          {(
+            <div>
+              <button
+                className={!this.props.posts.length > 1 ? 'page-button__disabled' : 'page-button'}
+                onClick={() => this.prevClick(this.state.posts[0])}
+                onTouchTap={() => this.prevClick(this.state.posts[0])}
+              >
+                prev
               </button>
 
-                <button
-                  className={!this.props.posts.length > 1 ? 'page-button__disabled' : 'page-button'}
-                  onClick={() => this.nextClick(this.state.posts[this.state.posts.length -1 ].votes)}
-                  onTouchTap={() => this.nextClick(this.state.posts[this.state.posts.length -1 ].votes)}
-                >
-                  next
+              <button
+                className={!this.props.posts.length > 1 ? 'page-button__disabled' : 'page-button'}
+                onClick={() => this.nextClick(this.state.posts[this.state.posts.length - 1])}
+                onTouchTap={() => this.nextClick(this.state.posts[this.state.posts.length - 1])}
+              >
+                next
               </button>
-              </div>
-            )}
+            </div>
+          )}
         </List>
       </div>
     )

@@ -2,13 +2,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 import AddPostForm from './AddPostForm';
 import { fireAddPost } from '../actions/posts';
+import { history } from '../routers/AppRouter';
 
 export class AddPostPage extends React.Component {
   onSubmit = (post) => {
     const title = this.props.seen.title
     this.props.fireAddPost(post)
-    this.props.history.push(`/s/${title}`)
-  };
+    history.push(`/s/${title}`)
+  }
   user = this.props.user
   isAuthed = this.props.isAuthed
   seen = this.props.seen

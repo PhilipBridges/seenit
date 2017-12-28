@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import Seens from './Seens'
 import { Link } from 'react-router-dom';
-import { getPosts, fireGetSinglePost } from '../actions/posts';
+import { getPosts, fireGetSinglePost, fireNextSubPosts, firePrevSubPosts } from '../actions/posts';
 import Post from './Post'
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import RaisedButton from './RaisedButton';
@@ -31,18 +31,30 @@ export class Seen extends Component {
       history.push(`/s/${seen}/posts/${title}`)
     })
   }
+  nextClick = (e) => {
+    this.props.fireNextSubPosts(e)
+  }
+  prevClick = (e) => {
+    this.props.firePrevSubPosts(e)
+  }
   componentWillReceiveProps(nextProps) {
-      this.setState({ xPosts: this.props.newPosts })
+    this.setState({ xPosts: this.props.newPosts })
   }
   componentWillMount() {
     this.setState({ xPosts: [] })
   }
-  componentDidMount(){
+  componentDidMount() {
     this.setState({ xPosts: this.props.newPosts })
   }
   render() {
     const { title, body, author, id } = this.props.seen
-    const posts = this.state.xPosts
+    const posts = this.state.xPosts.sort((a, b) => {
+      if (a.votes === b.votes) {
+        return a.date < b.date
+      } else {
+        return a.votes < b.votes
+      }
+    })
     return (
       <div>
         <div className="seens">
@@ -72,6 +84,25 @@ export class Seen extends Component {
               </ListItem>
             </NewButton>
           ))}
+          {(
+            <div>
+              <button
+                className='page-button'
+                onClick={() => this.prevClick(this.state.xPosts[0])}
+                onTouchTap={() => this.prevClick(this.state.xPosts[0])}
+              >
+                prev
+              </button>
+
+              <button
+                className='page-button'
+                onClick={() => this.nextClick(this.state.xPosts[this.state.xPosts.length - 1])}
+                onTouchTap={() => this.nextClick(this.state.xPosts[this.state.xPosts.length - 1])}
+              >
+                next
+              </button>
+            </div>
+          )}
         </List>
       </div>
     )
@@ -80,13 +111,15 @@ export class Seen extends Component {
 
 const mapStateToProps = (state, props) => ({
   seen: state.seens.find((seen) => seen.title === props.match.params.title),
-  newPosts: state.posts !== [] ? state.posts : []
+  newPosts: state.posts
 });
 
 const mapDispatchToProps = (dispatch) => ({
   getPosts: (id) => dispatch(getPosts(id)),
   fireGetComments: (comments) => dispatch(fireGetComments(comments)),
   fireGetSinglePost: (id) => dispatch(fireGetSinglePost(id)),
+  fireNextSubPosts: (e) => dispatch(fireNextSubPosts(e)),
+  firePrevSubPosts: (e) => dispatch(firePrevSubPosts(e)),
   getComments: (comments) => dispatch(getComments(comments))
 });
 

@@ -26,7 +26,7 @@ export const fireAddComment = (commentData = {}) => {
       seenname = '',
     } = commentData;
     const comment = { title, body, author, date, seen, seenname, seenid, commentpostid, commentid, votes, voters }
-    db.collection(`/posts/${commentpostid}/comments`).add(comment).then((ref) => {
+    db.collection(`/posts/`).doc(commentpostid).collection('comments').add(comment).then((ref) => {
       dispatch(addComment({
         id: ref.key,
         ...comment
@@ -45,7 +45,7 @@ export const getComments = (comments) => ({
 export const fireGetComments = (id) => {
   return (dispatch, getState) => {
     const uid = getState().auth.uid;
-    return db.collection(`/posts/${id}/comments`)
+    return db.collection(`posts`).doc(id).collection('comments')
       .get()
       .then((snapshot) => {
         const comments = []

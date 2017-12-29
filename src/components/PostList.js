@@ -52,10 +52,14 @@ export class PostList extends Component {
         <List className="list-body">
           {arr.map((post) => (
             <NewButton onClick={() => this.handleClick({ ...post })} key={post.postid} {...post}>
+            <span className='votes'>{post.votes}</span>
               <ListItem className="mui-fix" >
-                <p>{post.votes} - {post.title}
+              
+                <p className='content'>{post.title}
                   <br />
-                  by {post.author} @ {moment(post.date).format('MMMM Do')} in {post.seen}
+                  <p className='sub'>by {post.author} 
+                  <br/>
+                  @ {moment(post.date).format('MMMM Do')} in {post.seen}</p>
                 </p>
               </ListItem>
             </NewButton>

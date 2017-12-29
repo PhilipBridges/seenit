@@ -77,7 +77,8 @@ export class Seen extends Component {
           {posts.map((post) => (
             <NewButton onClick={this.buttonClick} key={post.postid || post.title} {...post}>
               <ListItem className="mui-fix" >
-                <p>{post.votes} - {post.title}
+                <span className='votes'>{post.votes}</span>
+                <p>{post.title}
                   <br />
                   by {post.author} @ {moment(post.date).format('MMMM Do')}
                 </p>

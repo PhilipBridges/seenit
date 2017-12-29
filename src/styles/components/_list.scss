@@ -12,6 +12,10 @@
   justify-content: right;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  float: left;
+  width: 29rem;
+  margin-left: 1rem;
 }
 
 .list-item {
@@ -64,4 +68,18 @@
   @media (min-width: $desktop-breakpoint) {
     margin: 0;
   }
+}
+
+.votes {
+  margin-right: 17px;
+  float: left;
+}
+
+.sub {
+  font-size: 1.4rem;
+}
+
+.content {
+  margin-top: 8px;
+  margin-bottom: 8px;
 }

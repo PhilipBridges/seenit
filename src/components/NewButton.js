@@ -11,7 +11,6 @@ const styles = {
     justifyContent: "left",
     fontWeight: "inherit",
     fontFamily: "Roboto, sans-serif",
-    lineHeight: "1.6",
     padding: "0"
   },
 };

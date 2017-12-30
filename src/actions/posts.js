@@ -15,7 +15,7 @@ export const fireGetPosts = () => {
     return db.collection(`/posts`)
       .orderBy('votes', 'desc')
       .orderBy('date', 'desc')
-      .limit(4)
+      .limit(10)
       .get()
       .then((snapshot) => {
         const posts = []
@@ -38,7 +38,7 @@ export const fireNextPosts = (e) => {
       .orderBy('votes', 'desc')
       .orderBy('date', 'desc')
       .startAfter(start, date)
-      .limit(4)
+      .limit(10)
       .get()
       .then((snapshot) => {
         const posts = []
@@ -61,7 +61,7 @@ export const firePrevPosts = (e) => {
       .orderBy('votes', 'asc')
       .orderBy('date', 'asc')
       .startAfter(start, date)
-      .limit(4)
+      .limit(10)
       .get()
       .then((snapshot) => {
         const posts = []
@@ -89,7 +89,7 @@ export const fireGetSubPosts = (id) => {
       .where("seenid", "==", id)
       .orderBy('votes', 'desc')
       .orderBy('date', 'desc')
-      .limit(4)
+      .limit(10)
       .get()
       .then((snapshot) => {
         if (!snapshot.empty) {
@@ -122,7 +122,7 @@ export const fireNextSubPosts = (e) => {
       .orderBy('votes', 'desc')
       .orderBy('date', 'desc')
       .startAfter(start, date)
-      .limit(4)
+      .limit(10)
       .get()
       .then((snapshot) => {
         const posts = []
@@ -147,7 +147,7 @@ export const firePrevSubPosts = (e) => {
       .orderBy('votes', 'asc')
       .orderBy('date', 'asc')
       .startAfter(start, date)
-      .limit(4)
+      .limit(10)
       .get()
       .then((snapshot) => {
         const posts = []

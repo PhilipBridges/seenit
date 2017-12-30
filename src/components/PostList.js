@@ -54,7 +54,6 @@ export class PostList extends Component {
             <NewButton onClick={() => this.handleClick({ ...post })} key={post.postid} {...post}>
             <span className='votes'>{post.votes}</span>
               <ListItem className="mui-fix" >
-              
                 <p className='content'>{post.title}
                   <br />
                   <p className='sub'>by {post.author} 
@@ -67,7 +66,7 @@ export class PostList extends Component {
           {(
             <div>
               <button
-                className={!this.props.posts.length > 1 ? 'page-button__disabled' : 'page-button'}
+                className='page-button'
                 onClick={() => this.prevClick(this.state.posts[0])}
                 onTouchTap={() => this.prevClick(this.state.posts[0])}
               >
@@ -75,7 +74,7 @@ export class PostList extends Component {
               </button>
 
               <button
-                className={!this.props.posts.length > 1 ? 'page-button__disabled' : 'page-button'}
+                className='page-button'
                 onClick={() => this.nextClick(this.state.posts[this.state.posts.length - 1])}
                 onTouchTap={() => this.nextClick(this.state.posts[this.state.posts.length - 1])}
               >

@@ -41,22 +41,25 @@ export class Post extends Component {
     const { author, body, date, title, id, votes } = this.state.post
     return (
       <div className="content-container">
-        Score: {votes}
-        {this.props.userId && this.props.userId.length > 1 ? (
-          <div>
-            <ArrowDropUp onClick={this.upVote} className={this.state.upvoted ? "upvoted" : "votes"} />
-            <ArrowDropDown onClick={this.downVote} className={this.state.downvoted ? "downvoted" : "votes"} />
-          </div>
-        )
-          :
-          (
-            <div></div>
-          )}
+        <div>
+          Score: {votes}
+          {this.props.userId && this.props.userId.length > 1 ? (
+            <div>
+              <ArrowDropUp onClick={this.upVote} className={this.state.upvoted ? "upvoted" : "vote"} />
+              <ArrowDropDown onClick={this.downVote} className={this.state.downvoted ? "downvoted" : "vote"} />
+            </div>
+          )
+            :
+            (
+              <div></div>
+            )}
+        </div>
         <div className="list-header">
           {title}
           <br />
           by {author} @ {moment(date).format('MMMM Do')}
         </div>
+
         <div className="list-body">
           <div>
             <p className="list-item__data">
